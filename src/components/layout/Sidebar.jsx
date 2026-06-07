@@ -1,12 +1,13 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, UserCheck, Phone, Activity,
   FileText, ShoppingCart, Factory, Package, Truck,
   ShieldCheck, Receipt, CreditCard, BarChart3, Settings,
   UserCog, Wrench, Palette, Calculator, Building2,
-  Wallet, FolderOpen, Star, Box, PackageOpen, X
+  Wallet, FolderOpen, Star, Box, PackageOpen, X, LogOut
 } from 'lucide-react'
 import clsx from 'clsx'
+import { getUser } from '../../App'
 
 const nav = [
   { section: 'MAIN', items: [
@@ -53,6 +54,15 @@ const nav = [
 ]
 
 export default function Sidebar({ isOpen, onClose }) {
+  const navigate = useNavigate()
+  const user = getUser()
+  const initials = user?.name?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'U'
+
+  function logout() {
+    localStorage.removeItem('packcrm_user')
+    navigate('/login', { replace: true })
+  }
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -109,14 +119,23 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        {/* Footer */}
+        {/* Footer — user + logout */}
         <div className="p-3 border-t border-gray-100">
-          <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">R</div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs font-semibold text-gray-800 truncate">Rahul Medhe</div>
-              <div className="text-xs text-gray-400">Admin</div>
+          <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              {initials}
             </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-semibold text-gray-800 truncate">{user?.name || 'User'}</div>
+              <div className="text-xs text-gray-400 truncate">{user?.email || ''}</div>
+            </div>
+            <button
+              onClick={logout}
+              title="Logout"
+              className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+            >
+              <LogOut size={15} />
+            </button>
           </div>
         </div>
       </aside>

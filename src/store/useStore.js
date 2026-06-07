@@ -125,31 +125,15 @@ const useStore = create((set, get) => ({
   jobCards: [],
   documents: [],
 
-  // ─── Initialize from Supabase ───────────────────────────────────
-  fetchAll: async () => {
-    set({ loading: true, syncError: null })
-    try {
-      const { data, error } = await supabase.from('app_state').select('*')
+  // ─── Initialize: show seed data instantly, sync from Supabase in background ──
+  fetchAll: () => {
+    // Show app immediately — no spinner, no waiting
+    set({ company: defaultCompany, ...seed, loading: false, syncError: null })
 
-      if (error) throw error
-
-      if (!data || data.length === 0) {
-        // First run — seed the DB with default data
-        console.log('[PackCRM] No data in Supabase — seeding with defaults...')
-        const seedState = { company: defaultCompany, ...seed }
-        set({ ...seedState, loading: false })
-
-        // Async seed — fire and forget
-        const seedEntries = [
-          { key: 'company', data: defaultCompany },
-          ...Object.entries(seed).map(([key, data]) => ({ key, data })),
-        ]
-        supabase.from('app_state').insert(seedEntries).then(({ error: e }) => {
-          if (e) console.warn('[PackCRM] Seed insert error:', e.message)
-          else console.log('[PackCRM] Seeded Supabase successfully')
-        })
-      } else {
-        // Hydrate store from Supabase data
+    // Background sync (non-blocking)
+    supabase.from('app_state').select('*')
+      .then(({ data, error }) => {
+        if (error || !data || data.length === 0) return
         const fromDB = Object.fromEntries(data.map(r => [r.key, r.data]))
         set({
           company: fromDB.company || defaultCompany,
@@ -172,15 +156,10 @@ const useStore = create((set, get) => ({
           expenses: fromDB.expenses || [],
           jobCards: fromDB.jobCards || [],
           documents: fromDB.documents || [],
-          loading: false,
+          syncError: null,
         })
-        console.log('[PackCRM] Loaded from Supabase:', data.length, 'tables')
-      }
-    } catch (err) {
-      console.error('[PackCRM] Failed to load from Supabase:', err.message)
-      // Graceful fallback to seed data so app still works offline
-      set({ ...seed, company: defaultCompany, loading: false, syncError: err.message })
-    }
+      })
+      .catch(() => {})
   },
 
   // ─── Company ────────────────────────────────────────────────────

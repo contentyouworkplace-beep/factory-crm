@@ -20,7 +20,7 @@ const titles = {
   '/settings': 'Settings',
 }
 
-export default function Layout({ children, syncError }) {
+export default function Layout({ children }) {
   const { pathname } = useLocation()
   const title = titles[pathname] || 'PackCRM'
   const now = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })
@@ -31,12 +31,6 @@ export default function Layout({ children, syncError }) {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Offline / sync error banner */}
-        {syncError && (
-          <div className="bg-amber-500 text-white text-center text-xs py-1.5 px-4 font-medium">
-            Offline mode — run SQL schema in Supabase to enable cloud sync
-          </div>
-        )}
         {/* Topbar */}
         <header className="bg-white border-b border-gray-100 px-4 lg:px-6 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm gap-3">
           {/* Hamburger (mobile only) */}

@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import {
   CheckCircle2, Package, FileText, Users, BarChart3, Truck, Settings,
-  Layers, ShieldCheck, Zap, Clock, Star, ArrowRight, Phone, Mail,
-  Factory, Printer, AlertCircle, X, ChevronDown, ChevronUp
+  Layers, ShieldCheck, Zap, ArrowRight, Phone,
+  Factory, Printer, ChevronDown, ChevronUp, MessageCircle
 } from 'lucide-react'
+
+const WA_NUMBER = '916353583148'
+function waLink(msg = 'Hi, I am interested in PackCRM for my packaging company.') {
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
+}
 
 const FEATURES = [
   { icon: Users, title: 'Lead & Customer CRM', desc: 'Manage all leads, track follow-ups, log calls & meetings. Never miss a hot inquiry from Amul, Cadbury or any buyer.' },
@@ -67,8 +72,56 @@ function FAQ({ q, a }) {
   )
 }
 
+function HeroForm() {
+  const [form, setForm] = useState({ name: '', company: '', phone: '' })
+  const [sent, setSent] = useState(false)
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    if (!form.phone) return
+    const msg = `Hi, I want a demo of PackCRM!\nName: ${form.name}\nCompany: ${form.company}\nPhone: ${form.phone}`
+    window.open(waLink(msg), '_blank')
+    setSent(true)
+  }
+
+  if (sent) return (
+    <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center max-w-md mx-auto">
+      <CheckCircle2 size={36} className="text-green-500 mx-auto mb-3" />
+      <p className="font-bold text-green-800 text-lg">Opening WhatsApp…</p>
+      <p className="text-green-600 text-sm mt-1">Send the pre-filled message and we'll reply within minutes.</p>
+    </div>
+  )
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 max-w-md mx-auto">
+      <p className="text-sm font-semibold text-gray-500 mb-4 text-center uppercase tracking-wide">Get a Free Demo — Reply in Minutes</p>
+      <div className="space-y-3 mb-4">
+        <input
+          type="text" placeholder="Your Name"
+          value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+        />
+        <input
+          type="text" placeholder="Company Name"
+          value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
+          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+        />
+        <input
+          type="tel" placeholder="WhatsApp Number *" required
+          value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+        />
+      </div>
+      <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white py-3.5 rounded-xl font-bold text-base transition-colors flex items-center justify-center gap-2">
+        <MessageCircle size={20} /> WhatsApp Me a Free Demo
+      </button>
+      <p className="text-center text-xs text-gray-400 mt-3">No spam. No sales calls. Just a quick demo link on WhatsApp.</p>
+    </form>
+  )
+}
+
 export default function OfferPage() {
-  const [slots] = useState(67) // simulate remaining slots
+  const [slots] = useState(67)
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -94,34 +147,33 @@ export default function OfferPage() {
             <a href="#pricing" className="hover:text-orange-500 transition-colors">Pricing</a>
             <a href="#faq" className="hover:text-orange-500 transition-colors">FAQ</a>
           </div>
-          <a href="#pricing" className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-semibold text-sm transition-colors">
-            Get Early Access
+          <a href={waLink('Hi, I want early access to PackCRM!')} target="_blank" rel="noreferrer"
+            className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg font-semibold text-sm transition-colors flex items-center gap-1.5">
+            <MessageCircle size={15} />WhatsApp Us
           </a>
         </div>
       </nav>
 
       {/* Hero */}
       <section className="pt-20 pb-24 px-6 bg-gradient-to-br from-orange-50 via-white to-blue-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
-            <Zap size={14} />Built for Indian Packaging Manufacturers
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+              <Zap size={14} />Built for Indian Packaging Manufacturers
+            </div>
+            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+              Run Your Packaging Factory<br />
+              <span className="text-orange-500">From One Screen</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+              PackCRM replaces your Excel files, WhatsApp chaos, and paper job cards with one complete system — built specifically for corrugated, mono carton, and flexible packaging companies.
+            </p>
           </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-            Run Your Packaging Factory<br />
-            <span className="text-orange-500">From One Screen</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            PackCRM replaces your Excel files, WhatsApp chaos, and paper job cards with one complete system — built specifically for corrugated, mono carton, and flexible packaging companies.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-            <a href="#pricing" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
-              Get Early Access at Rs.15,000/yr <ArrowRight size={20} />
-            </a>
-            <a href="/" className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-200 px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
-              See Live Demo
-            </a>
-          </div>
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500">
+
+          {/* Hero CTA Form */}
+          <HeroForm />
+
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500 mt-8">
             {['No setup fee', 'All updates included', 'WhatsApp support', 'Cancel anytime'].map(t => (
               <div key={t} className="flex items-center gap-1.5"><CheckCircle2 size={15} className="text-green-500" />{t}</div>
             ))}
@@ -285,15 +337,16 @@ export default function OfferPage() {
               ))}
             </ul>
 
-            <a href={`mailto:rahulmedhe05@gmail.com?subject=PackCRM Early Access&body=Hi, I want to get early access to PackCRM for my packaging company. Company: [Your Company Name] City: [Your City] Phone: [Your Phone]`}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
-              Book My Slot — Rs.15,000/yr <ArrowRight size={20} />
+            <a href={waLink('Hi, I want early access to PackCRM. Please share demo details.\nCompany: \nCity: ')}
+              target="_blank" rel="noreferrer"
+              className="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
+              <MessageCircle size={22} /> Book My Slot on WhatsApp — Rs.15,000/yr
             </a>
-            <p className="text-center text-xs text-gray-400 mt-3">No credit card needed to enquire. We'll send you a demo link first.</p>
+            <p className="text-center text-xs text-gray-400 mt-3">No credit card needed. We'll send you a demo link on WhatsApp first.</p>
           </div>
 
           <div className="mt-6 text-center text-sm text-gray-500">
-            Questions? WhatsApp or call <a href="tel:+919876543210" className="text-orange-600 font-semibold">+91 98765 43210</a> or email <a href="mailto:rahulmedhe05@gmail.com" className="text-orange-600 font-semibold">rahulmedhe05@gmail.com</a>
+            Questions? WhatsApp us at <a href={waLink('Hi, I have a question about PackCRM')} target="_blank" rel="noreferrer" className="text-green-600 font-semibold">+91 63535 83148</a>
           </div>
         </div>
       </section>
@@ -361,9 +414,9 @@ export default function OfferPage() {
             Join {slots} packaging companies who already upgraded. Offer ends when 100 slots are filled.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={`mailto:rahulmedhe05@gmail.com?subject=PackCRM Early Access`}
-              className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
-              <Mail size={20} />Book My Slot Now
+            <a href={waLink('Hi, I want early access to PackCRM!')} target="_blank" rel="noreferrer"
+              className="bg-white text-green-600 hover:bg-green-50 px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
+              <MessageCircle size={20} />Book My Slot on WhatsApp
             </a>
             <a href="/" className="bg-orange-600 hover:bg-orange-700 text-white border-2 border-orange-400 px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
               View Live Demo <ArrowRight size={20} />
