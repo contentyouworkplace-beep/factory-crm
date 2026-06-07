@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+
+# Environment variables (contains Supabase keys)
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# Editor
+.vscode/
+*.log
